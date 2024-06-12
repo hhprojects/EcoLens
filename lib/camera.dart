@@ -42,7 +42,7 @@ class _CameraState extends State<Camera> {
 
         controller.startImageStream((CameraImage img) {
           imageCounter++;
-          if (imageCounter % 10 == 0) {
+          if (imageCounter % 100 == 0) {
             if (!isDetecting) {
               isDetecting = true;
 
