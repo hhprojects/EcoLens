@@ -1,94 +1,139 @@
-import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
-import 'package:tflite_v2/tflite_v2.dart';
-import 'dart:math' as math;
-
-import 'camera.dart';
-import 'bndbox.dart';
-import 'models.dart';
+import 'package:eco_lens_draft/dashboard.dart';
+import 'package:eco_lens_draft/settings.dart';
+import 'package:flutter/material.dart';
+import 'package:eco_lens_draft/constants.dart';
+import 'package:eco_lens_draft/display_page.dart';
 
 class HomePage extends StatefulWidget {
   final List<CameraDescription> cameras;
 
-  HomePage(this.cameras);
+  const HomePage({
+    super.key,
+    required this.cameras,
+  });
 
   @override
-  _HomePageState createState() => new _HomePageState();
+  State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  List<dynamic>? _recognitions;
-  int _imageHeight = 0;
-  int _imageWidth = 0;
-  String _model = ssd;
-  String _itemSelected = "";
+  int currentIndex = 0;
 
-  @override
-  void initState() {
-    super.initState();
-    loadModel();
-  }
-
-  loadModel() async {
-    String? res;
-    res = await Tflite.loadModel(
-        model: "assets/ssd_mobilenet.tflite",
-        labels: "assets/ssd_mobilenet.txt");
-
-    print(res);
-  }
-
-  setRecognitions(recognitions, imageHeight, imageWidth) {
-    print(recognitions);
+  setBottomBarIndex(index) {
     setState(() {
-      _recognitions = recognitions;
-      _imageHeight = imageHeight;
-      _imageWidth = imageWidth;
+      currentIndex = index;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    Size screen = MediaQuery.of(context).size;
+    final List<Widget> tabs = [
+      DisplayPage(widget.cameras),
+      const DashboardPage(),
+      const SettingsPage(),
+    ];
+    final Size size = MediaQuery.of(context).size;
     return Scaffold(
-      body: Stack(
+      backgroundColor: backgroundColor,
+      body: Column(
         children: [
-          Camera(
-            widget.cameras,
-            _model,
-            setRecognitions,
+          Expanded(
+            child: Container(
+              child: tabs[currentIndex],
+            ),
           ),
-          BndBox(
-            _recognitions == null ? [] : _recognitions!,
-            math.max(_imageHeight, _imageWidth),
-            math.min(_imageHeight, _imageWidth),
-            screen.height,
-            screen.width,
-            _model,
-            onTap: (value) {
-              // setState(() {
-              //   _itemSelected = value;
-              // });
-
-              showDialog(
-                context: context,
-                builder: (context) {
-                  return AlertDialog(
-                    actions: [
-                      ElevatedButton(
+          Positioned(
+            bottom: 0,
+            left: 0,
+            child: SizedBox(
+              width: size.width,
+              height: 80,
+              child: Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  CustomPaint(
+                    size: Size(size.width, 80),
+                    painter: BNBCustomPainter(),
+                  ),
+                  Center(
+                    heightFactor: 0.6,
+                    child: FloatingActionButton(
+                        backgroundColor: primaryColor,
+                        elevation: 0.1,
+                        onPressed: () {
+                          setBottomBarIndex(0);
+                        },
+                        child: const Icon(Icons.camera_alt)),
+                  ),
+                  SizedBox(
+                    width: size.width,
+                    height: 80,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        IconButton(
+                          icon: Icon(
+                            Icons.home,
+                            color: currentIndex == 1
+                                ? primaryColor
+                                : Colors.grey.shade400,
+                          ),
                           onPressed: () {
-                            Navigator.of(context).pop();
+                            setBottomBarIndex(1);
                           },
-                          child: Text("Close"))
-                    ],
-                    content: Text(value),
-                  );
-                },
-              );
-            },
-          ),
+                          splashColor: Colors.white,
+                        ),
+                        Container(
+                          width: size.width * 0.20,
+                        ),
+                        IconButton(
+                            icon: Icon(
+                              Icons.notifications,
+                              color: currentIndex == 2
+                                  ? const Color(0xFFFFBF00)
+                                  : Colors.grey.shade400,
+                            ),
+                            onPressed: () {
+                              setBottomBarIndex(2);
+                            }),
+                      ],
+                    ),
+                  )
+                ],
+              ),
+            ),
+          )
         ],
       ),
     );
+  }
+}
+
+class BNBCustomPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    Paint paint = Paint()
+      ..color = Colors.white
+      ..style = PaintingStyle.fill;
+
+    Path path = Path();
+    path.moveTo(0, 20); // Start
+    path.quadraticBezierTo(size.width * 0.20, 0, size.width * 0.35, 0);
+    path.quadraticBezierTo(size.width * 0.40, 0, size.width * 0.40, 20);
+    path.arcToPoint(Offset(size.width * 0.60, 20),
+        radius: const Radius.circular(20.0), clockwise: false);
+    path.quadraticBezierTo(size.width * 0.60, 0, size.width * 0.65, 0);
+    path.quadraticBezierTo(size.width * 0.80, 0, size.width, 20);
+    path.lineTo(size.width, size.height);
+    path.lineTo(0, size.height);
+    path.lineTo(0, 20);
+    canvas.drawShadow(path, Colors.black, 5, true);
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) {
+    return false;
   }
 }

@@ -41,12 +41,11 @@ class _CameraState extends State<Camera> {
         setState(() {});
 
         controller.startImageStream((CameraImage img) {
-          imageCounter++;
-          if (imageCounter % 100 == 0) {
+          if (imageCounter % 50 == 0) {
             if (!isDetecting) {
               isDetecting = true;
 
-              int startTime = new DateTime.now().millisecondsSinceEpoch;
+              int startTime = DateTime.now().millisecondsSinceEpoch;
 
               Tflite.detectObjectOnFrame(
                 bytesList: img.planes.map((plane) {
@@ -70,6 +69,7 @@ class _CameraState extends State<Camera> {
             }
             imageCounter = 0;
           }
+          imageCounter++;
         });
       });
     }

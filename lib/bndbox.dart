@@ -1,3 +1,4 @@
+import 'package:eco_lens_draft/constants.dart';
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 import 'models.dart';
@@ -54,7 +55,7 @@ class BndBox extends StatelessWidget {
             padding: EdgeInsets.only(top: 5.0, left: 5.0),
             decoration: BoxDecoration(
               border: Border.all(
-                color: Color.fromRGBO(37, 213, 253, 1.0),
+                color: backgroundColor,
                 width: 3.0,
               ),
             ),
@@ -67,7 +68,9 @@ class BndBox extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                     ),
                     onPressed: () {
-                      onTap("${re["detectedClass"]}");
+                      onTap("${re["detectedClass"]}" == "laptop"
+                          ? "lenovo-legion-slim-5"
+                          : "samsung-s20-ultra");
                     },
                   ),
                 ),
