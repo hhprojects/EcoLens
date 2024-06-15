@@ -1,16 +1,18 @@
-# eco_lens_draft
+# EcoLens
 
-A new Flutter project.
+<br><br>
+<p align="center">
+  <img src="/assets/icon.png" alt="EcoLens Logo" width="200px"/>
+</p>
 
-## Getting Started
+Our project `EcoLens` is a computer vision program that aims to engage individuals and organizations in building a system enhances the learning experience of carbon waste.
+<br><br>
+Through our computer vision model, we are able to scan and detect specific objects alongside a `Information` button for the user to click. By clicking onto the button, a popup will appear providing more information regarding the product such as the model, the manufacturing carbon footprint, alternative products, and recommended usage for the specific product category.
+<br>
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+# Snippets from our project
+<br><br>
+<p align="center">
+  <img src="/assets/information.jpg" alt="EcoLens Logo" width="200px"/>
+  <img src="/assets/dashboard.jpg" alt="EcoLens Logo" width="200px"/>
+</p>
